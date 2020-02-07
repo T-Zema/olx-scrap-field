@@ -34,16 +34,35 @@ print("strona internetowa:", site)
 # # for site in new_list:
 # print ("test................")
 url = new_list[0]
-url = 'https://www.olx.pl/oferta/asus-rog-g73jh-i7-8gb-ram-dysk-ssd-480gb-zamienie-CID99-IDDxZpW.html#a0e78786f1'
+url = 'https://www.olx.pl/oferta/laptop-asus-rog-strix-i5-gtx1050-16gb-CID99-IDDyvA2.html'
 response = get(url)
 print(response.text[:500])
 html_soup = BeautifulSoup(response.text, 'html.parser')
+# print(html_soup)
 type(html_soup)
 title = html_soup.find('title').text # tuttul w koncu lol
 item_containers = html_soup.find_all('tr', class_='wrap')
 item_containers_offer = html_soup.find_all('div', class_='offer-wrapper')
 item_containers_desc = html_soup.find_all('div', class_='clr lheight20 large')
 item_containers_tit = html_soup.find_all('div', class_='offer-titlebox')
+item_containers_price = html_soup.find('div', class_='price-label')
+print("test....")
+cena = item_containers_price.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip() # bardzo wazny kod
+
+print(cena)
+if "Do negocjacji" in cena:
+    print("prawda")
+    negocjacja = "Tak"
+    negocjacja_b = True
+else:
+    negocjacja = "Nie"
+    negocjacja_b = False
+    print("nieprawda")
+
+    
+cena_liczba = int("".join(filter(str.isdigit,cena)))
+print(type(cena_liczba))
+print(cena_liczba)
 print ("test.............\n...")
 title = str(html_soup.find('h1')).replace('\n', ' ').replace('\r', '')
 print(title)
