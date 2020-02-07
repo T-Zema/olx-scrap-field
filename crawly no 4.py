@@ -1,6 +1,15 @@
-from requests import get
-from bs4 import BeautifulSoup
-import re
+
+
+try:
+    from requests import get
+    from bs4 import BeautifulSoup
+    import re
+    import pandas as pd
+    import time
+    from tqdm import tqdm
+except ImportError:
+    pass
+
 
 """ myslę żeby klucz do wyszukiwania przekazać jako parametr..."""
 
@@ -18,7 +27,7 @@ linki = []
 for a in html_soup.find_all('a', href=re.compile('^https://www.olx.pl/oferta')):
     print ("Found the URL:", a['href'])
     linki.append(a['href'])
-print (len(linki))
+print(len(linki))
 
 """ lista linków do zbadania """
 
@@ -33,18 +42,67 @@ link_non_duplicate = list(dict.fromkeys(linki))
 # new_list = [x for x in link_non_duplicate if len(x) > 76]
 # print(new_list)
 # print(len(new_list))
-#  operacja na jednym
 
-site = new_list[0]
+
+# site = new_list[0]
 # print(type(site))
-print("strona internetowa:", site)
+# print("strona internetowa:", site)
 
 # response_sub_site = get(site)
 # print ("test................")
 # html_soup_sub = BeautifulSoup(response_sub_site, 'html.parser')
 # # for site in new_list:
 # print ("test................")
-url = new_list[0]
+# url = new_list[0]
+#  operacja na jednym
+
+"""testowanie progress baru"""
+ilosc_linkow = len(link_non_duplicate)
+for i in tqdm(range(ilosc_linkow)):
+    time.sleep(1)
+
+
+
+for oferta in link_non_duplicate:
+    print("link do zwiedzanej oferty: ",oferta)
+    time.sleep(2)
+
+
+    url = oferta
+    """weź całą stronę"""
+    response = get(url)
+    html_soup = BeautifulSoup(response.text, 'html.parser')
+
+    """weź opis"""
+    item_containers_desc = html_soup.find_all('div', class_='clr lheight20 large')
+
+
+    for opis in item_containers_desc:
+        print(opis.text)
+        opis_oferty = opis
+
+    """weź cenę"""
+    item_containers_price = html_soup.find('div', class_='price-label')
+
+    cena = item_containers_price.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip()  # bardzo wazny kod
+
+    if "Do negocjacji" in cena:
+        print("prawda")
+        negocjacja = "Tak"
+        negocjacja_b = True
+    else:
+        negocjacja = "Nie"
+        negocjacja_b = False
+        print("nieprawda")
+
+    cena_liczba = int("".join(filter(str.isdigit, cena)))
+    print(type(cena_liczba))
+    print(cena_liczba)
+
+
+
+    df = pd.DataFrame(columns=['Tytul', 'Link', 'Cena', 'Negocjacja', 'Data_utworzenia', 'Opis'])
+
 url = 'https://www.olx.pl/oferta/laptop-asus-rog-strix-i5-gtx1050-16gb-CID99-IDDyvA2.html'
 response = get(url)
 print(response.text[:500])
@@ -61,8 +119,11 @@ item_containers_price = html_soup.find('div', class_='price-label')
 print("test....")
 # print(item_containers_desc)
 # opis przedmiotu
-for e in item_containers_desc:
-    print(e.text)
+
+"""cena"""
+for opis in item_containers_desc:
+    print(opis.text)
+    opis_oferty = opis
 cena = item_containers_price.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip() # bardzo wazny kod
 
 if "Do negocjacji" in cena:
