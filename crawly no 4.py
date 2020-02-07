@@ -7,6 +7,7 @@ try:
     import pandas as pd
     import time
     from tqdm import tqdm
+    from datetime import date
 except ImportError:
     pass
 
@@ -56,6 +57,9 @@ link_non_duplicate = list(dict.fromkeys(linki))
 # url = new_list[0]
 #  operacja na jednym
 
+
+raw_data = {'Tytul': [], "Link": [], 'Negocjacja': [], "Cena": [], "Data_utworzenia": [], "Opis": []}
+
 """testowanie progress baru"""
 ilosc_linkow = len(link_non_duplicate)
 for i in tqdm(range(ilosc_linkow)):
@@ -63,10 +67,10 @@ for i in tqdm(range(ilosc_linkow)):
 
 
 
-for oferta in link_non_duplicate:
-    print("link do zwiedzanej oferty: ",oferta)
-    time.sleep(2)
 
+for oferta in link_non_duplicate:
+    print("link do zwiedzanej oferty: ", oferta)
+    time.sleep(2)
 
     url = oferta
     """weź całą stronę"""
@@ -76,10 +80,10 @@ for oferta in link_non_duplicate:
     """weź opis"""
     item_containers_desc = html_soup.find_all('div', class_='clr lheight20 large')
 
-
+    opis_oferty = ''
     for opis in item_containers_desc:
         print(opis.text)
-        opis_oferty = opis
+        opis_oferty = opis.text
 
     """weź cenę"""
     item_containers_price = html_soup.find('div', class_='price-label')
@@ -98,10 +102,24 @@ for oferta in link_non_duplicate:
     cena_liczba = int("".join(filter(str.isdigit, cena)))
     print(type(cena_liczba))
     print(cena_liczba)
+    """ tytuł """
+    title = html_soup.find('h1')
+    def_title = title.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip()
+    print(title)
+    """data"""
+    dzisiaj = date.today()
 
-
-
+    raw_data['Tytul'].append(def_title)
+    raw_data['Link'].append(url)
+    raw_data['Cena'].append(cena_liczba)
+    raw_data['Negocjacja'].append(negocjacja)
+    raw_data['Data_utworzenia'].append(dzisiaj)
+    raw_data['Opis'].append(opis_oferty)
+    print("!@#!$#@$!@#@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(raw_data)
+    print("!@#!$#@$!@#@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     df = pd.DataFrame(columns=['Tytul', 'Link', 'Cena', 'Negocjacja', 'Data_utworzenia', 'Opis'])
+
 
 url = 'https://www.olx.pl/oferta/laptop-asus-rog-strix-i5-gtx1050-16gb-CID99-IDDyvA2.html'
 response = get(url)
@@ -123,7 +141,7 @@ print("test....")
 """cena"""
 for opis in item_containers_desc:
     print(opis.text)
-    opis_oferty = opis
+    opis_oferty = opis.text
 cena = item_containers_price.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip() # bardzo wazny kod
 
 if "Do negocjacji" in cena:
