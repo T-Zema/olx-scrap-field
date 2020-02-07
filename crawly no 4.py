@@ -40,16 +40,20 @@ print(response.text[:500])
 html_soup = BeautifulSoup(response.text, 'html.parser')
 # print(html_soup)
 type(html_soup)
-title = html_soup.find('title').text # tuttul w koncu lol
+title = html_soup.find('title').text # tytul w koncu lol
+
 item_containers = html_soup.find_all('tr', class_='wrap')
 item_containers_offer = html_soup.find_all('div', class_='offer-wrapper')
 item_containers_desc = html_soup.find_all('div', class_='clr lheight20 large')
-item_containers_tit = html_soup.find_all('div', class_='offer-titlebox')
+item_containers_tit = html_soup.find('div', class_='offer-titlebox') # może lepiej brać tutuł z tego
 item_containers_price = html_soup.find('div', class_='price-label')
 print("test....")
+# print(item_containers_desc)
+# opis przedmiotu
+for e in item_containers_desc:
+    print(e.text)
 cena = item_containers_price.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip() # bardzo wazny kod
 
-print(cena)
 if "Do negocjacji" in cena:
     print("prawda")
     negocjacja = "Tak"
@@ -59,17 +63,21 @@ else:
     negocjacja_b = False
     print("nieprawda")
 
-    
+
 cena_liczba = int("".join(filter(str.isdigit,cena)))
 print(type(cena_liczba))
 print(cena_liczba)
-print ("test.............\n...")
+print(cena)
+print ("test................")
+test = html_soup.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip()
+print ("test................")
+print(test)
+print ("test................")
 title = str(html_soup.find('h1')).replace('\n', ' ').replace('\r', '')
 print(title)
 
 
 
-these_regex="<title>(.+?)</title>"
 
 # while(i<len(urls)):
 #         htmlfile=urllib.urlopen(urls[i])
@@ -77,7 +85,8 @@ these_regex="<title>(.+?)</title>"
 titles = re.findall('<h1\b[^>]*>(.*?)</h1>', str(title))
 print("wynik",titles)
 
-print(item_containers_tit)
+print(item_containers_tit.text.replace('\n', ' ').replace('\r', '').lstrip().rstrip())
+
 # soup = BeautifulSoup(item_containers_tit, "html.parser")
 # print([link.get_text() for link in soup.select("#h1 > a")])
 
