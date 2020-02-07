@@ -1,27 +1,38 @@
 from requests import get
 from bs4 import BeautifulSoup
 import re
-url = 'http://www.olx.pl/oferty/q-asus-rog/'
+
+""" myslę żeby klucz do wyszukiwania przekazać jako parametr..."""
+
+key = "Thinkpad T540p"
+url = 'https://www.olx.pl/oferty/q-' + key
 response = get(url)
 # print(response.text[:500])
 html_soup = BeautifulSoup(response.text, 'html.parser')
 type(html_soup)
 
-print("test")
+
 # <link rel="next" href="https://www.olx.pl/oferty/q-asus-rog/?page=2"> nastepna strona
 # class="thumb vtop inlblk rel tdnone linkWithHash scale4 detailsLink "
 linki = []
-for a in html_soup.find_all('a', href=True):
+for a in html_soup.find_all('a', href=re.compile('^https://www.olx.pl/oferta')):
     print ("Found the URL:", a['href'])
     linki.append(a['href'])
 print (len(linki))
-linki_l = list(dict.fromkeys(linki))
-print(len(linki_l))
 
+""" lista linków do zbadania """
 
-new_list = [x for x in linki_l if len(x) > 76]
-print(new_list)
-print(len(new_list))
+link_non_duplicate = list(dict.fromkeys(linki))
+
+""" bałagan """
+# print (link_non_duplicate)
+# print(len(link_non_duplicate))
+# test_linki = [x for x in linki if key in x]
+# print("test")
+# print(test_linki)
+# new_list = [x for x in link_non_duplicate if len(x) > 76]
+# print(new_list)
+# print(len(new_list))
 #  operacja na jednym
 
 site = new_list[0]
