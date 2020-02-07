@@ -59,19 +59,18 @@ link_non_duplicate = list(dict.fromkeys(linki))
 
 
 raw_data = {'Tytul': [], "Link": [], 'Negocjacja': [], "Cena": [], "Data_utworzenia": [], "Opis": []}
+df = pd.DataFrame(raw_data)
+# df = pd.DataFrame(columns=['Tytul', 'Link', 'Cena', 'Negocjacja', 'Data_utworzenia', 'Opis'])
 
 """testowanie progress baru"""
 ilosc_linkow = len(link_non_duplicate)
-for i in tqdm(range(ilosc_linkow)):
-    time.sleep(1)
 
 
 
 
-for oferta in link_non_duplicate:
-    print("link do zwiedzanej oferty: ", oferta)
-    time.sleep(2)
+for oferta in tqdm(link_non_duplicate):
 
+    time.sleep(0.5)
     url = oferta
     """weź całą stronę"""
     response = get(url)
@@ -83,7 +82,7 @@ for oferta in link_non_duplicate:
     opis_oferty = ''
     for opis in item_containers_desc:
         print(opis.text)
-        opis_oferty = opis.text
+        opis_oferty = opis.text.lstrip().rstrip()
 
     """weź cenę"""
     item_containers_price = html_soup.find('div', class_='price-label')
@@ -117,9 +116,14 @@ for oferta in link_non_duplicate:
     raw_data['Opis'].append(opis_oferty)
     print("!@#!$#@$!@#@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(raw_data)
+    # df = df.append(raw_data,ignore_index=True)
+    df = df.from_dict(raw_data)
     print("!@#!$#@$!@#@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    df = pd.DataFrame(columns=['Tytul', 'Link', 'Cena', 'Negocjacja', 'Data_utworzenia', 'Opis'])
 
+
+print("!@#!$#@$!@#@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+print (df)
+df.to_excel("output.xlsx")
 
 url = 'https://www.olx.pl/oferta/laptop-asus-rog-strix-i5-gtx1050-16gb-CID99-IDDyvA2.html'
 response = get(url)
