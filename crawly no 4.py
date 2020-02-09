@@ -16,7 +16,8 @@ TO DO
 - dodanie daty utworzenia oferty
 - przekazywanie klucza do wyszukiwania jako parametr
 - enkapsulacja
-- posprzatac balagan
+- oczyscic kod z linijek testowych //done
+
 """
 
 
@@ -48,7 +49,6 @@ link_non_duplicate = list(dict.fromkeys(linki))
 raw_data = {'Tytul': [], "Link": [], 'Negocjacja': [], "Cena": [], "Data_utworzenia": [], "Opis": []}
 df = pd.DataFrame(raw_data)
 
-"""testowanie progress baru"""
 ilosc_linkow = len(link_non_duplicate)
 
 
@@ -93,7 +93,7 @@ for oferta in tqdm(link_non_duplicate):
     print(title)
     """data"""
     dzisiaj = date.today()
-
+    """dodawanie wartości do słownika"""
     raw_data['Tytul'].append(def_title)
     raw_data['Link'].append(url)
     raw_data['Cena'].append(cena_liczba)

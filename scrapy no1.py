@@ -11,3 +11,8 @@ def solution(S):
     # print(sting_count)
     return S
 solution(S)
+
+
+import random
+
+print(random.randrange(1,16))
